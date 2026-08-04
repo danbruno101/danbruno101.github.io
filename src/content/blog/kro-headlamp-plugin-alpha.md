@@ -52,4 +52,4 @@ Feedback and bug reports are very welcome — this is a first public release, an
 
 If you're running kro anywhere, I'd love to hear what's missing from this — especially which views you reach for most when debugging a broken reconciliation.
 
-*If you're curious how the plugin actually pulls this off — discovering generated CRDs at runtime, reconstructing kro's dependency graph from status, and finding sub-resources with no owner references to lean on — I wrote up the technical internals in a follow-up post.*
+*If you're curious how the plugin actually pulls this off — discovering generated CRDs at runtime, reconstructing kro's dependency graph from status, and finding sub-resources with no owner references to lean on — I wrote up the technical internals in [a follow-up post](/blog/kro-headlamp-plugin-deep-dive/).*
