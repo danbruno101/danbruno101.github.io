@@ -1,0 +1,55 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  heroImage?: string;
+}
+
+const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+
+const dateFormat: Intl.DateTimeFormatOptions = {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+};
+---
+
+<BaseLayout title={title} description={description} image={heroImage}>
+  <article>
+    <header class="post-header">
+      <h1>{title}</h1>
+      <p class="meta">
+        <time datetime={pubDate.toISOString()}>{pubDate.toLocaleDateString('en-us', dateFormat)}</time>
+        {
+          updatedDate && (
+            <span> · Updated <time datetime={updatedDate.toISOString()}>{updatedDate.toLocaleDateString('en-us', dateFormat)}</time></span>
+          )
+        }
+      </p>
+    </header>
+    {heroImage && <img src={heroImage} alt="" />}
+    <div class="content">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .post-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .meta {
+    color: var(--color-muted);
+    font-size: 0.9rem;
+  }
+
+  .content :global(h2),
+  .content :global(h3) {
+    margin-top: 2rem;
+  }
+</style>
