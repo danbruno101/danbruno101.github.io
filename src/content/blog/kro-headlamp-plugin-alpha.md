@@ -24,11 +24,29 @@ The plugin adds dedicated, live-updating views (no polling — it uses Kubernete
 
 **ResourceGraphDefinitions.** A list and detail view showing the generated API's kind and version, its state and conditions, and — this is the part I think is most useful — the composed resources laid out in kro's own topological order, with annotations for dependencies and external references. You can finally see the shape of the graph you defined, not just its YAML.
 
+![The Resource Graph Definitions list in Headlamp, showing finetunemodel, clusterplatform, and genaiservice with their generated kinds, kro.run/v1alpha1 API version, and Active state.](./images/kro-rgd-list.png)
+
+*Every RGD in the cluster, with the API it generates and whether kro has accepted it.*
+
+On the detail page, that same graph shows up as a table of composed resources — each one's kind, API version, what it depends on, and whether it's conditional:
+
+![An RGD detail page showing the Composed Resources table: platformConfig as an external read-only ConfigMap, cache and cacheOverride as PersistentVolumeClaims depending on platformConfig, plus deployment, service, and monitor. Below it, a Schema table lists cacheSize, mode, and model fields with defaults.](./images/kro-composed-resources.png)
+
+*Composed resources in kro's topological order, with external references marked read-only — alongside the simplified schema developers actually consume.*
+
 **Instances.** For every active RGD, the plugin automatically discovers the generated CRD and builds a view for it — no configuration needed. New APIs just show up.
 
 **Sub-resources with resolved values.** This is the one that sells the "portability" story kro is built around. Each resource an instance creates shows up with its health, a deep link to Headlamp's native page for it, and the *environment-resolved* values that actually matter — a PVC's real `storageClassName`, a Deployment's ready count, a Service's type and cluster IP. So if the same instance YAML produces a different storage class on cluster A versus cluster B, you see that difference right in the UI instead of having to diff `kubectl` output by hand.
 
+![The Sub-resources table for a GenAIService instance, listing a PersistentVolumeClaim (Bound, storageClass standard, capacity 8Gi), a Deployment (2/2 ready), and two Services (both Created, with their ClusterIPs).](./images/kro-sub-resources.png)
+
+*Health and resolved values per sub-resource — the storage class and cluster IPs here are what the cluster actually produced, not what the template asked for.*
+
 There's also Map view integration (RGDs, instances, and their resources show up as nodes you can navigate), and a "New Instance" action that pre-fills Headlamp's YAML editor with a minimal valid instance based on the RGD's schema — useful for testing an API without hand-writing YAML from scratch.
+
+![Headlamp's Map view with three ResourceGraphDefinition nodes on the left and namespace groups for kube-system, default, jobset-system, kro, and local-path-storage alongside them.](./images/kro-map.png)
+
+*kro's RGDs as first-class nodes in Headlamp's Map, next to the workloads they ultimately produce.*
 
 ## Why this matters beyond convenience
 

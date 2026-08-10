@@ -52,4 +52,23 @@ const dateFormat: Intl.DateTimeFormatOptions = {
   .content :global(h3) {
     margin-top: 2rem;
   }
+
+  /* Screenshots: give the (dark) images a defined edge on light backgrounds,
+     and treat the italic line following one as its caption. */
+  .content :global(p:has(> img)) {
+    margin: 2rem 0 0.5rem;
+  }
+
+  .content :global(img) {
+    display: block;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+  }
+
+  .content :global(p:has(> img) + p) {
+    margin-top: 0;
+    color: var(--color-muted);
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
 </style>
