@@ -4,9 +4,9 @@ description: 'An alpha Headlamp plugin that gives kro ResourceGraphDefinitions, 
 pubDate: 2026-08-04
 ---
 
-If you've adopted [kro](https://kro.run) (Kube Resource Orchestrator) to build simplified, portable APIs on top of Kubernetes, you've probably run into the same friction I did: kro's entire value proposition — the graph of resources it generates and reconciles on your behalf — only really exists in YAML and `kubectl` output. You define a `ResourceGraphDefinition`, kro turns it into a real CRD, and then... you're back to squinting at `kubectl get` and `describe` to understand what actually got created.
+I built an alpha plugin for Headlamp, the open-source Kubernetes UI. It just had its first public release: **[kro Plugin for Headlamp, v0.1.0-alpha](https://github.com/headlamp-k8s/plugins/releases/tag/kro-0.1.0-alpha)**.
 
-I built an alpha plugin for [Headlamp](https://headlamp.dev), the open-source Kubernetes UI, to close that gap. It just had its first public release: **kro Plugin for Headlamp, v0.1.0-alpha**.
+If you've adopted [kro](https://kro.run) (Kube Resource Orchestrator) to build simplified, portable APIs on top of Kubernetes, you've probably run into the same friction I did: kro's entire value proposition — the graph of resources it generates and reconciles on your behalf — only really exists in YAML and `kubectl` output. You define a `ResourceGraphDefinition`, kro turns it into a real CRD, and then... you're back to squinting at `kubectl get` and `describe` to understand what actually got created. The kro plugin for [Headlamp](https://headlamp.dev) closes that gap.
 
 ## The problem, in plain terms
 
