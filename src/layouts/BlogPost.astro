@@ -59,10 +59,15 @@ const dateFormat: Intl.DateTimeFormatOptions = {
     margin: 2rem 0 0.5rem;
   }
 
+  /* Cap height so tall/portrait images (e.g. social cards) don't swallow the
+     page; landscape screenshots render well under this and are unaffected. */
   .content :global(img) {
     display: block;
     border: 1px solid var(--color-border);
     border-radius: 8px;
+    max-height: 640px;
+    width: auto;
+    margin-inline: auto;
   }
 
   .content :global(p:has(> img) + p) {

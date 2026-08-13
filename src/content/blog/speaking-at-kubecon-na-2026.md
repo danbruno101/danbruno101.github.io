@@ -6,7 +6,9 @@ pubDate: 2026-08-13
 
 I'm speaking at **#KubeCon + #CloudNativeCon North America**, November 9–12 in Salt Lake City, Utah!
 
-![KubeCon + CloudNativeCon North America 2026, November 9-12, Salt Lake City, Utah — "I'm Speaking" announcement graphic. Register now + join me.](/images/kubecon-na-2026-speaking.png)
+![KubeCon + CloudNativeCon North America 2026, November 9-12, Salt Lake City, Utah — "I'm Speaking" announcement graphic. Register now + join me.](./images/kubecon-na-2026-speaking.png)
+
+*November 9–12, 2026 — Salt Lake City, Utah.*
 
 My session is titled **"Achieving Cross-Cloud Portability with the Kubernetes Resource Orchestrator"**, about using kro to collapse sprawling, cloud-specific infrastructure into standard, portable Kubernetes APIs — no bespoke Go operators required.
 
