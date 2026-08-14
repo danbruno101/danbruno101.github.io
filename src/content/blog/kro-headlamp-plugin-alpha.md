@@ -2,6 +2,7 @@
 title: "Making kro's Resource Graphs Visible: A Headlamp Plugin (Alpha)"
 description: 'An alpha Headlamp plugin that gives kro ResourceGraphDefinitions, instances, and their resolved sub-resources dedicated, live-updating views instead of raw YAML.'
 pubDate: 2026-08-04
+updatedDate: 2026-08-14
 ---
 
 I built an alpha plugin for Headlamp, the open-source Kubernetes UI. It just had its first public release: **[kro Plugin for Headlamp, v0.1.0-alpha](https://github.com/headlamp-k8s/plugins/releases/tag/kro-0.1.0-alpha)**.
@@ -52,12 +53,41 @@ There's also Map view integration (RGDs, instances, and their resources show up 
 
 If you care about kro because of its multi-cloud portability story — the same API definition working across kind, EKS, GKE, and AKS with cluster-specific values resolved underneath — visibility is the whole ballgame. It's one thing to claim portability works; it's another to point at a screen and show a platform engineer the exact StorageClass or Service type that got resolved differently per cluster. This plugin makes that argument concrete instead of theoretical.
 
+## Update: embedded graphs have landed
+
+When I first wrote this, the biggest rough edge was that per-RGD and per-instance graphs only existed in Headlamp's *global* Map view, not on the detail pages where you actually want them. That was blocked on Headlamp exposing its Map renderer to plugins — and that export has since landed in [headlamp#6992](https://github.com/kubernetes-sigs/headlamp/pull/6992).
+
+The plugin now adopts it. The RGD detail page renders the template DAG, and the instance detail page renders the live resource graph, both inline:
+
+![The Template Graph view on an RGD detail page: a ResourceGraphDefinition node for genaiservice fanning out to a conditional monitor Service, a Service, an external read-only ConfigMap platformConfig, and a Deployment, with the ConfigMap in turn feeding two conditional PersistentVolumeClaims, cache and cacheOverride.](./images/kro-template-graph.png)
+
+*The template DAG, embedded directly on the RGD detail page — no trip to the global Map required.*
+
+![The Resource Graph on a GenAIService instance detail page, showing the sentiment-api Deployment, PersistentVolumeClaim, and two Services converging on the GenAIService node, breadcrumbed under Namespace default.](./images/kro-instance-graph.png)
+
+*The live resource graph for a single instance, on that instance's own page.*
+
+On hosts newer than Headlamp 0.44.0 these use Headlamp's own GraphView, which means you get KubeIcons and the standard node details panel for free — click any node and the normal Headlamp detail drawer opens over the graph:
+
+![Clicking the sentiment-api Deployment node opens Headlamp's standard details panel, showing its kro ownership labels (kro.run/instance-kind GenAIService, kro.run/owned true, kro.run/kro-version v0.9.2), rolling update strategy, and 2/2 replicas, alongside the plugin's own Sub-resources table.](./images/kro-instance-node-details.png)
+
+*Native node details, from the plugin's graph — the kro ownership labels the plugin uses for discovery are right there in the panel.*
+
+Older hosts aren't left behind: Headlamp 0.44.0 and older automatically fall back to the plugin's own lightweight renderer, drawing the same graphs. No configuration, no version pinning — the plugin picks whichever is available.
+
+This work is in flight as [plugins#1182](https://github.com/headlamp-k8s/plugins/pull/1182).
+
 ## What's still rough (it's alpha, after all)
 
-Two known limitations, both worth being upfront about:
+The embedded graphs inherit some behavior from the Map view they're built on, which is visible when the native GraphView is in use:
 
-- Per-RGD and per-instance graphs currently live in Headlamp's global Map view rather than being embedded directly on detail pages. That's blocked on Headlamp exposing its Map renderer to plugins ([tracking issue](https://github.com/kubernetes-sigs/headlamp/issues/6556)) — the plugin will adopt embedded graphs as soon as that ships.
-- The Map view can occasionally get stuck loading on some clusters, due to a core Headlamp aggregation issue ([tracking issue](https://github.com/kubernetes-sigs/headlamp/issues/6555)) unrelated to this plugin specifically.
+- The Map chrome — source picker, namespace filter, grouping chips — renders above the graph, and other enabled Map sources can contribute related nodes. So the instance graph shows the instance in its wider kro context, including its RGD and sibling instances, rather than strictly the instance's own resources.
+- Opening a page with an embedded graph resets Headlamp's global namespace filter, exactly as visiting the Map view does.
+- Node selection adds `?node=` and `?group=` query parameters to the detail page URL and participates in browser history. Harmless to the plugin's routes, but it does mean the back button walks through node selections.
+
+These are upstream behaviors of the exposed renderer rather than plugin bugs, and they're tracked in [headlamp#7242](https://github.com/kubernetes-sigs/headlamp/issues/7242), which requests an opt-in embedded mode that would turn the chrome off.
+
+Separately, the Map view can occasionally get stuck loading on some clusters, due to a core Headlamp aggregation issue ([tracking issue](https://github.com/kubernetes-sigs/headlamp/issues/6555)) unrelated to this plugin specifically.
 
 Feedback and bug reports are very welcome — this is a first public release, and the views and behavior will keep evolving before a 1.0.
 
